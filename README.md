@@ -12,4 +12,5 @@
 **- All done!**
 
 **"App currently in development; no release date has been set yet (Currently available only on macOS)"**
-<img width="944" height="676" alt="image" src="https://github.com/user-attachments/assets/7eca7222-9e18-45d2-a56c-eb3dacb33d0a" />
+<img width="400" height="280" alt="image" src="https://github.com/user-attachments/assets/7eca7222-9e18-45d2-a56c-eb3dacb33d0a" /> <img width="400" height="280" alt="image" src="https://github.com/user-attachments/assets/d5257752-85c4-4e14-85ba-b8da20d36558" />
+
