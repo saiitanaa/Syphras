@@ -16,7 +16,7 @@
 **"App currently in development; no release date has been set yet (Currently available only on macOS)"**
 
 ## How to Install ? 
-<img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/b2b76769-80ae-4715-bcc9-2c8f3856c032" /> <img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/95160b00-d508-4507-b16f-e4241b053a7f" /> <img width="300" height="200" alt="image" src="https://github.com/user-attachments/assets/7b288099-2f6f-4b8a-a965-02d140174df4" />
+<img width="200" height="100" alt="image" src="https://github.com/user-attachments/assets/b2b76769-80ae-4715-bcc9-2c8f3856c032" /> <img width="200" height="100" alt="image" src="https://github.com/user-attachments/assets/95160b00-d508-4507-b16f-e4241b053a7f" /> <img width="200" height="100" alt="image" src="https://github.com/user-attachments/assets/7b288099-2f6f-4b8a-a965-02d140174df4" />
 
 
 
