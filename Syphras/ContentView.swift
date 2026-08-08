@@ -28,10 +28,14 @@ struct Peer: Identifiable, Hashable {
 
 // MARK: - tr header
 
-private struct TransferHeader: Codable {
+private struct TransferHeader {
     let filename: String
     let fileSize: UInt64
 }
+
+extension TransferHeader: Sendable {}
+
+nonisolated extension TransferHeader: Codable {}
 
 // MARK: - transfer
 
@@ -114,10 +118,8 @@ final class PeerBrowser: ObservableObject {
         var sourceURL = fileURL
         var isTemporaryZip = false
 
-        // Vérifier si l'URL pointe vers un dossier
         var isDirectory: ObjCBool = false
         if FileManager.default.fileExists(atPath: fileURL.path, isDirectory: &isDirectory), isDirectory.boolValue {
-            // C'est un dossier : on le compresse en .zip temporaire
             let zipURL = FileManager.default.temporaryDirectory
                 .appendingPathComponent(fileURL.lastPathComponent)
                 .appendingPathExtension("zip")
@@ -136,14 +138,13 @@ final class PeerBrowser: ObservableObject {
                 sourceURL = zipURL
                 isTemporaryZip = true
             } else {
-                sendStatus = .failure("Impossible de compresser le dossier")
+                sendStatus = .failure("Compressor error !")
                 return
             }
         }
 
-        // Lecture des données du fichier (ou du zip temporaire)
         guard let fileData = try? Data(contentsOf: sourceURL) else {
-            sendStatus = .failure("Impossible de lire le fichier/dossier")
+            sendStatus = .failure("Unable to read the file/folder")
             if isTemporaryZip { try? FileManager.default.removeItem(at: sourceURL) }
             return
         }
@@ -288,6 +289,7 @@ struct ContentView: View {
     @State private var screen: Screen = .drop
     @State private var isTargeted = false
     @StateObject private var browser = PeerBrowser()
+    @EnvironmentObject var appState: AppState
 
     var body: some View {
         Group {
@@ -299,10 +301,41 @@ struct ContentView: View {
             }
         }
         .frame(width: 800, height: 500)
-        .navigationTitle(Text("Syphras - Chicken Update"))
+        .navigationTitle(Text("Syphras"))
         .padding()
         .onAppear { browser.start() }
         .onDisappear { browser.stop() }
+        .task {
+            await appState.checkForUpdateOnLaunch()
+        }
+        .alert(
+            "Update Available",
+            isPresented: $appState.showUpdateAlert,
+            presenting: appState.availableRelease
+        ) { release in
+            Button("Download") {
+                NSWorkspace.shared.open(release.htmlURL)
+            }
+            Button("Later", role: .cancel) { }
+        } message: { release in
+            Text("Version \(release.tagName) is available (current: \(appState.currentVersion)).")
+        }
+        .alert(
+            "You're Up to Date",
+            isPresented: $appState.showNoUpdateAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Syphras \(appState.currentVersion) is the latest version available.")
+        }
+        .alert(
+            "Error",
+            isPresented: $appState.showUpdateErrorAlert
+        ) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(appState.updateErrorMessage ?? "Unable to check for updates.")
+        }
     }
 
     // MARK: drag&drop
